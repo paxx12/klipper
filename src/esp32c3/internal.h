@@ -21,10 +21,10 @@
 #define SYSTIMER_INT_CLR_REG        MMIO32(SYSTIMER_BASE + 0x06C)
 
 #define SYSTIMER_CLK_EN             (1u << 31)
-#define SYSTIMER_UNIT0_WORK_EN      (1u << 0)
-#define SYSTIMER_UNIT0_UPDATE       (1u << 31)
-#define SYSTIMER_UNIT0_VALUE_VALID  (1u << 30)
-#define SYSTIMER_TARGET0_ALARM_EN   (1u << 31)
+#define SYSTIMER_UNIT0_WORK_EN      (1u << 30)
+#define SYSTIMER_TARGET0_WORK_EN    (1u << 24)
+#define SYSTIMER_UNIT0_UPDATE       (1u << 30)
+#define SYSTIMER_UNIT0_VALUE_VALID  (1u << 29)
 #define SYSTIMER_INT_COMP0          (1u << 0)
 
 /* Timer Group 0 (watchdog) */
@@ -36,19 +36,20 @@
 #define TIMG0_WDTWPROTECT_REG       MMIO32(TIMG0_BASE + 0x064)
 #define TIMG_WDT_WKEY               0x50D83AA1U
 #define TIMG_WDT_EN                 (1u << 31)
-#define TIMG_WDT_STG0_RESET_SYS     (3u << 28)
+#define TIMG_WDT_STG0_RESET_SYS     (3u << 29)
 #define TIMG_WDT_FLASHBOOT_MOD_EN   (1u << 14)
+#define TIMG_WDT_CONF_UPDATE_EN     (1u << 22)
 
 /* RTC_CNTL - system control and RTC watchdog */
 #define RTC_CNTL_BASE               0x60008000U
 #define RTC_CNTL_OPTIONS0_REG       MMIO32(RTC_CNTL_BASE + 0x000)
 #define RTC_CNTL_WDTCONFIG0_REG     MMIO32(RTC_CNTL_BASE + 0x090)
-#define RTC_CNTL_WDTWPROTECT_REG    MMIO32(RTC_CNTL_BASE + 0x0A4)
-#define RTC_CNTL_SWD_CONF_REG       MMIO32(RTC_CNTL_BASE + 0x0B0)
-#define RTC_CNTL_SWD_WPROTECT_REG   MMIO32(RTC_CNTL_BASE + 0x0B4)
+#define RTC_CNTL_WDTWPROTECT_REG    MMIO32(RTC_CNTL_BASE + 0x0A8)
+#define RTC_CNTL_SWD_CONF_REG       MMIO32(RTC_CNTL_BASE + 0x0AC)
+#define RTC_CNTL_SWD_WPROTECT_REG   MMIO32(RTC_CNTL_BASE + 0x0B0)
 #define RTC_WDT_WKEY                0x50D83AA1U
 #define RTC_CNTL_SWD_WKEY           0x8F1D312AU
-#define RTC_CNTL_SWD_DISABLE        (1u << 31)
+#define RTC_CNTL_SWD_DISABLE        (1u << 30)
 #define RTC_CNTL_SW_SYS_RST         (1u << 31)
 
 /* UART0 - APB clock (80MHz after ROM init) */

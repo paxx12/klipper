@@ -174,7 +174,7 @@ disable_flash_boot_wdt(void)
 {
     /* Disable TIMG0 flash-boot watchdog */
     TIMG0_WDTWPROTECT_REG = TIMG_WDT_WKEY;
-    TIMG0_WDTCONFIG0_REG = 0;
+    TIMG0_WDTCONFIG0_REG = TIMG_WDT_CONF_UPDATE_EN;
     TIMG0_WDTWPROTECT_REG = 0;
 
     /* Disable RTC watchdog */

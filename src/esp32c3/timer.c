@@ -37,11 +37,13 @@ timer_set(uint32_t next)
 {
     timer_next = next;
     timer_pending = 1;
+    SYSTIMER_CONF_REG &= ~SYSTIMER_TARGET0_WORK_EN;
     SYSTIMER_TARGET0_HI_REG = 0;
     SYSTIMER_TARGET0_LO_REG = next;
-    SYSTIMER_COMP0_LOAD_REG = 0;
-    SYSTIMER_TARGET0_CONF_REG |= SYSTIMER_TARGET0_ALARM_EN;
+    SYSTIMER_COMP0_LOAD_REG = 1;
+    SYSTIMER_TARGET0_CONF_REG = 0;
     SYSTIMER_INT_CLR_REG = SYSTIMER_INT_COMP0;
+    SYSTIMER_CONF_REG |= SYSTIMER_TARGET0_WORK_EN;
 }
 
 void
@@ -57,7 +59,7 @@ timer_poll(void)
         return;
     if (SYSTIMER_INT_RAW_REG & SYSTIMER_INT_COMP0) {
         SYSTIMER_INT_CLR_REG = SYSTIMER_INT_COMP0;
-        SYSTIMER_TARGET0_CONF_REG &= ~SYSTIMER_TARGET0_ALARM_EN;
+        SYSTIMER_CONF_REG &= ~SYSTIMER_TARGET0_WORK_EN;
         timer_pending = 0;
         uint32_t next = timer_dispatch_many();
         timer_set(next);
