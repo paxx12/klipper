@@ -4,7 +4,6 @@
 //
 // This file may be distributed under the terms of the GNU GPLv3 license.
 
-#include "autoconf.h" // CONFIG_USB_SERIAL_NUMBER_CHIPID
 #include "generic/usb_cdc.h" // usb_fill_serial
 #include "generic/usbstd.h" // usb_string_descriptor
 #include "internal.h" // EFUSE_*
@@ -39,8 +38,6 @@ read_chipid(uint8_t *out)
 void
 chipid_init(void)
 {
-    if (!CONFIG_USB_SERIAL_NUMBER_CHIPID)
-        return;
     uint8_t data[CHIPID_LEN];
     read_chipid(data);
     usb_fill_serial(&cdc_chipid.desc, ARRAY_SIZE(cdc_chipid.data), data);

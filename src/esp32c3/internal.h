@@ -213,7 +213,7 @@
 #define USB_DEVICE_WR_DONE          (1u << 0)
 #define USB_DEVICE_SERIAL_IN_FREE   (1u << 1)
 #define USB_DEVICE_SERIAL_OUT_AVAIL (1u << 2)
-#define USB_DEVICE_CLK_EN           (1u << 1)
+#define USB_DEVICE_CLK_EN           (1u << 0)
 
 /* eFuse - unique chip ID (MAC address in block 1) */
 #define EFUSE_BASE                  0x60008800U

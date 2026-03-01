@@ -1,78 +1,55 @@
-// USB Serial/JTAG console on esp32c3 (polling)
+// USB Serial/JTAG console on esp32c3
 //
 // Copyright (C) 2024  Klipper contributors
 //
 // This file may be distributed under the terms of the GNU GPLv3 license.
 
-#include <string.h> // memmove
-#include <stdint.h> // uint8_t
-#include "command.h" // command_find_and_dispatch
+#include <stdint.h>
+#include "autoconf.h" // CONFIG_USB_SERIAL_NUMBER_CHIPID
+#include "board/serial_irq.h" // serial_rx_byte, serial_get_tx_byte
 #include "internal.h" // USB_DEVICE_*
 #include "sched.h" // DECL_TASK, DECL_INIT
-
-#define RX_BUFFER_SIZE 192
-
-static uint8_t receive_buf[RX_BUFFER_SIZE];
-static int receive_pos;
-static struct task_wake console_wake;
-
-static int
-usb_rx_pending(void)
+#if CONFIG_USB_SERIAL_NUMBER_CHIPID
+#include "generic/usbstd.h" // usb_string_descriptor
+void usb_fill_serial(struct usb_string_descriptor *d, int l, void *id)
 {
-    return !!(USB_DEVICE_EP1_CONF_REG & USB_DEVICE_SERIAL_OUT_AVAIL);
+    (void)d; (void)l; (void)id;
 }
+#endif
 
-static uint8_t
-usb_rx_byte(void)
-{
-    return (uint8_t)(USB_DEVICE_EP1_REG & 0xFF);
-}
-
-static void
-usb_tx_byte(uint8_t b)
-{
-    while (!(USB_DEVICE_EP1_CONF_REG & USB_DEVICE_SERIAL_IN_FREE))
-        ;
-    USB_DEVICE_EP1_REG = b;
-}
+static struct task_wake usbserial_tx_wake;
 
 void
-console_task(void)
+usbserial_task(void)
 {
-    while (usb_rx_pending()) {
-        uint8_t c = usb_rx_byte();
-        if (c == MESSAGE_SYNC)
-            sched_wake_tasks();
-        if (receive_pos < RX_BUFFER_SIZE)
-            receive_buf[receive_pos++] = c;
-        sched_wake_task(&console_wake);
-    }
+    while (USB_DEVICE_EP1_CONF_REG & USB_DEVICE_SERIAL_OUT_AVAIL)
+        serial_rx_byte((uint8_t)(USB_DEVICE_EP1_REG & 0xFF));
 
-    if (!sched_check_wake(&console_wake))
+    if (!sched_check_wake(&usbserial_tx_wake))
         return;
 
-    int len = receive_pos;
-    uint_fast8_t pop_count, msglen = len > MESSAGE_MAX ? MESSAGE_MAX : len;
-    int ret = command_find_and_dispatch(receive_buf, msglen, &pop_count);
-    if (ret) {
-        len -= pop_count;
-        if (len) {
-            memmove(receive_buf, &receive_buf[pop_count], len);
-            sched_wake_task(&console_wake);
-        }
+    if (!(USB_DEVICE_EP1_CONF_REG & USB_DEVICE_SERIAL_IN_FREE)) {
+        sched_wake_task(&usbserial_tx_wake);
+        return;
     }
-    receive_pos = len;
+
+    int sent = 0;
+    uint8_t b;
+    while (USB_DEVICE_EP1_CONF_REG & USB_DEVICE_SERIAL_IN_FREE) {
+        if (serial_get_tx_byte(&b))
+            break;
+        USB_DEVICE_EP1_REG = b;
+        sent = 1;
+    }
+    if (sent)
+        USB_DEVICE_EP1_CONF_REG = USB_DEVICE_WR_DONE;
 }
-DECL_TASK(console_task);
+DECL_TASK(usbserial_task);
 
 void
-console_sendf(const struct command_encoder *ce, va_list args)
+serial_enable_tx_irq(void)
 {
-    uint8_t buf[MESSAGE_MAX];
-    uint_fast8_t msglen = command_encode_and_frame(buf, ce, args);
-    for (int i = 0; i < msglen; i++)
-        usb_tx_byte(buf[i]);
-    USB_DEVICE_EP1_CONF_REG = USB_DEVICE_WR_DONE;
+    sched_wake_task(&usbserial_tx_wake);
 }
 
 void

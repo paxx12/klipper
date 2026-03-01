@@ -15,9 +15,9 @@ src-y += generic/crc16_ccitt.c generic/timer_irq.c
 src-$(CONFIG_WANT_ADC) += esp32c3/adc.c
 src-$(CONFIG_WANT_SPI) += esp32c3/spi.c
 src-$(CONFIG_WANT_I2C) += esp32c3/i2c.c
-src-$(CONFIG_USB) += esp32c3/chipid.c
+src-$(CONFIG_USB_SERIAL_NUMBER_CHIPID) += esp32c3/chipid.c
 src-$(CONFIG_ESP32C3_SERIAL_UART0_IRQ) += esp32c3/serial.c generic/serial_irq.c
-src-$(CONFIG_USBSERIAL) += esp32c3/usbserial.c
+src-$(CONFIG_USBSERIAL) += esp32c3/usbserial.c generic/serial_irq.c
 
 # Build output binary using esptool
 $(OUT)klipper.bin: $(OUT)klipper.elf
