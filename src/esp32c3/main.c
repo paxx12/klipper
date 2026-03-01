@@ -8,6 +8,8 @@
 #include <string.h> // memmove
 #include "board/misc.h" // bootloader_request
 #include "command.h" // command_find_and_dispatch
+#include "compiler.h" // __visible
+#include "generic/irq.h" // irqstatus_t, irq_poll
 #include "internal.h" // UART0_*, SYSTIMER_*, RTC_CNTL_*
 #include "sched.h" // sched_main
 
@@ -203,7 +205,7 @@ bootloader_request(void)
  * Entry point (called by ROM bootloader)
  ****************************************************************/
 
-void __attribute__((noreturn))
+void __visible __attribute__((noreturn))
 esp32c3_main(void)
 {
     /* Clear BSS segment */

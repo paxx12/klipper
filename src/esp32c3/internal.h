@@ -2,6 +2,7 @@
 #define __ESP32C3_INTERNAL_H
 
 #include <stdint.h>
+#include "autoconf.h"
 
 #define MMIO32(addr) (*(volatile uint32_t *)(uintptr_t)(addr))
 

@@ -26,7 +26,7 @@ $(OUT)klipper.bin: $(OUT)klipper.elf
 target-y += $(OUT)klipper.bin
 
 # Linker rules
-CFLAGS_klipper.elf += -nostdlib -lgcc
+CFLAGS_klipper.elf += -nostdlib -lgcc -lc
 CFLAGS_klipper.elf += -T $(OUT)src/esp32c3/esp32c3_link.ld
 $(OUT)klipper.elf: $(OUT)src/esp32c3/esp32c3_link.ld
 
