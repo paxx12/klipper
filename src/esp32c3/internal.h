@@ -126,6 +126,84 @@
 #define SYSTEM_I2C0_CLK_EN          (1u << 7)
 #define SYSTEM_I2C1_CLK_EN          (1u << 16)
 
+/* SPI2 (GPSPI2/FSPI) */
+#define SPI2_BASE                   0x60024000U
+#define SPI2_CMD_REG                MMIO32(SPI2_BASE + 0x000)
+#define SPI2_CTRL_REG               MMIO32(SPI2_BASE + 0x008)
+#define SPI2_CLOCK_REG              MMIO32(SPI2_BASE + 0x018)
+#define SPI2_USER_REG               MMIO32(SPI2_BASE + 0x01C)
+#define SPI2_USER1_REG              MMIO32(SPI2_BASE + 0x020)
+#define SPI2_MS_DLEN_REG            MMIO32(SPI2_BASE + 0x028)
+#define SPI2_MISC_REG               MMIO32(SPI2_BASE + 0x02C)
+#define SPI2_W0_REG                 MMIO32(SPI2_BASE + 0x058)
+
+/* SPI2_CMD bits */
+#define SPI_USR                     (1u << 17)
+
+/* SPI2_USER bits */
+#define SPI_DOUTDIN                 (1u << 0)   /* full-duplex */
+#define SPI_CK_OUT_EDGE             (1u << 9)   /* CPHA */
+#define SPI_USR_MOSI                (1u << 27)
+#define SPI_USR_MISO                (1u << 28)
+
+/* SPI2_MISC bits */
+#define SPI_CK_IDLE_EDGE            (1u << 29)  /* CPOL */
+
+/* SPI2 clock enable in SYSTEM_PERIP_CLK_EN0 */
+#define SYSTEM_SPI2_CLK_EN          (1u << 6)
+
+/* IO_MUX func2 = direct SPI2 function for GPIO2/6/7 */
+#define IO_MUX_MCU_SEL_FUNC2        (2u << 12)
+
+/* I2C0/I2C1 */
+#define I2C0_BASE                   0x60013000U
+#define I2C1_BASE                   0x60027000U
+#define I2C_SCL_LOW_PERIOD_REG(b)   MMIO32((b) + 0x000)
+#define I2C_CTR_REG(b)              MMIO32((b) + 0x004)
+#define I2C_SR_REG(b)               MMIO32((b) + 0x008)
+#define I2C_TO_REG(b)               MMIO32((b) + 0x00C)
+#define I2C_FIFO_ST_REG(b)          MMIO32((b) + 0x014)
+#define I2C_FIFO_CONF_REG(b)        MMIO32((b) + 0x018)
+#define I2C_DATA_REG(b)             MMIO32((b) + 0x01C)
+#define I2C_INT_RAW_REG(b)          MMIO32((b) + 0x020)
+#define I2C_INT_CLR_REG(b)          MMIO32((b) + 0x024)
+#define I2C_INT_ENA_REG(b)          MMIO32((b) + 0x028)
+#define I2C_SDA_HOLD_REG(b)         MMIO32((b) + 0x030)
+#define I2C_SDA_SAMPLE_REG(b)       MMIO32((b) + 0x034)
+#define I2C_SCL_HIGH_PERIOD_REG(b)  MMIO32((b) + 0x038)
+#define I2C_SCL_START_HOLD_REG(b)   MMIO32((b) + 0x040)
+#define I2C_SCL_RSTART_SETUP_REG(b) MMIO32((b) + 0x044)
+#define I2C_SCL_STOP_HOLD_REG(b)    MMIO32((b) + 0x048)
+#define I2C_SCL_STOP_SETUP_REG(b)   MMIO32((b) + 0x04C)
+#define I2C_FILTER_CFG_REG(b)       MMIO32((b) + 0x050)
+#define I2C_CLK_CONF_REG(b)         MMIO32((b) + 0x054)
+#define I2C_COMD_REG(b, n)          MMIO32((b) + 0x058 + (n) * 4)
+
+/* I2C_CTR bits */
+#define I2C_MS_MODE                 (1u << 4)   /* 1 = master */
+#define I2C_TRANS_START             (1u << 5)
+#define I2C_CLK_EN                  (1u << 8)
+
+/* I2C_SR bits */
+#define I2C_BUS_BUSY                (1u << 4)
+
+/* I2C_INT bits */
+#define I2C_INT_TRANS_COMPLETE      (1u << 7)
+#define I2C_INT_ACK_ERR             (1u << 10)
+#define I2C_INT_ARBITRATION_LOST    (1u << 5)
+#define I2C_INT_ERROR_MASK          (I2C_INT_ACK_ERR | I2C_INT_ARBITRATION_LOST)
+
+/* I2C command opcodes */
+#define I2C_CMD_RSTART              0x0
+#define I2C_CMD_WRITE               0x1
+#define I2C_CMD_READ                0x2
+#define I2C_CMD_STOP                0x3
+#define I2C_CMD_END                 0x4
+
+#define I2C_CMD(op, byte_num, ack_en, ack_exp, ack_val) \
+    ((op) | ((byte_num) << 8) | ((ack_en) << 16) \
+     | ((ack_exp) << 17) | ((ack_val) << 18))
+
 /* eFuse - unique chip ID (MAC address in block 1) */
 #define EFUSE_BASE                  0x60008800U
 #define EFUSE_RD_MAC_SPI_SYS_0_REG  MMIO32(EFUSE_BASE + 0x044)
