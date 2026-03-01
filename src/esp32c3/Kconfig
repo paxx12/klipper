@@ -68,8 +68,8 @@ choice
         bool "UART0 on GPIO20/GPIO21 (interrupt-driven)"
         select SERIAL
     config ESP32C3_SERIAL_USB_JTAG
-        bool "USB Serial/JTAG controller (built-in USB)"
-        select SERIAL
+        bool "USBSERIAL"
+        select USBSERIAL
 endchoice
 
 endif
