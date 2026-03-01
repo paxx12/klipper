@@ -24,9 +24,31 @@ config FLASH_SIZE
     hex
     default 0x400000
 
+config FLASH_BOOT_ADDRESS
+    hex
+    default 0x0
+
 config STACK_SIZE
     int
     default 8192
+
+
+######################################################################
+# Flash offset
+######################################################################
+
+choice
+    prompt "Bootloader offset"
+    config ESP32C3_FLASH_START_0000
+        bool "No bootloader"
+    config ESP32C3_FLASH_START_10000
+        bool "16KiB bootloader (ESP-IDF)"
+endchoice
+
+config FLASH_APPLICATION_ADDRESS
+    hex
+    default 0x10000 if ESP32C3_FLASH_START_10000
+    default 0x0
 
 
 ######################################################################

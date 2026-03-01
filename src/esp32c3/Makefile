@@ -25,8 +25,12 @@ CFLAGS_klipper.elf += -nostdlib -lgcc
 CFLAGS_klipper.elf += -T $(OUT)src/esp32c3/esp32c3_link.ld
 $(OUT)klipper.elf: $(OUT)src/esp32c3/esp32c3_link.ld
 
-# Flash rules
+FLASH_BAUD ?= 460800
+FLASH_OFFSET := $(shell printf '0x%x' $(CONFIG_FLASH_APPLICATION_ADDRESS))
+
+# Flash via serial using esptool (enter download mode via DTR/RTS auto-reset)
 flash: $(OUT)klipper.bin
-	@echo "  Flashing $< to $(FLASH_DEVICE)"
-	$(Q)esptool.py --chip esp32c3 -p "$(FLASH_DEVICE)" -b 460800 \
-		write_flash 0x0 $<
+	@echo "  Flashing $< to $(FLASH_DEVICE) at offset $(FLASH_OFFSET)"
+	$(Q)esptool.py --chip esp32c3 -p "$(FLASH_DEVICE)" -b $(FLASH_BAUD) \
+		--before default_reset --after hard_reset \
+		write_flash $(FLASH_OFFSET) $<
