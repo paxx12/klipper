@@ -28,6 +28,7 @@ SECTIONS
     {
         _data_start = .;
         *(.data*)
+        *(.sdata*)
         . = ALIGN(4);
         _data_end = .;
     } > dram
@@ -37,6 +38,7 @@ SECTIONS
         . = ALIGN(4);
         _bss_start = .;
         *(.bss*)
+        *(.sbss*)
         *(COMMON)
         . = ALIGN(4);
         _bss_end = .;
