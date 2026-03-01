@@ -59,7 +59,10 @@ config FLASH_APPLICATION_ADDRESS
 choice
     prompt "Communication Interface"
     config ESP32C3_SERIAL_UART0
-        bool "UART0 on GPIO20/GPIO21"
+        bool "UART0 on GPIO20/GPIO21 (polling)"
+        select SERIAL
+    config ESP32C3_SERIAL_UART0_IRQ
+        bool "UART0 on GPIO20/GPIO21 (interrupt-driven)"
         select SERIAL
 endchoice
 
