@@ -26,7 +26,7 @@ struct gpio_pwm gpio_pwm_setup(uint8_t pin, uint32_t cycle_time, uint8_t val);
 void gpio_pwm_write(struct gpio_pwm g, uint32_t val);
 
 struct gpio_adc {
-    uint8_t pin;
+    uint8_t chan;
 };
 struct gpio_adc gpio_adc_setup(uint32_t pin);
 uint32_t gpio_adc_sample(struct gpio_adc g);

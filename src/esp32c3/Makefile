@@ -12,6 +12,7 @@ CFLAGS += -ffreestanding -fno-builtin
 src-y += esp32c3/main.c esp32c3/gpio.c
 src-y += esp32c3/timer.c esp32c3/watchdog.c
 src-y += generic/crc16_ccitt.c generic/timer_irq.c
+src-$(CONFIG_WANT_ADC) += esp32c3/adc.c
 src-$(CONFIG_USB) += esp32c3/chipid.c
 src-$(CONFIG_ESP32C3_SERIAL_UART0_IRQ) += esp32c3/serial.c generic/serial_irq.c
 

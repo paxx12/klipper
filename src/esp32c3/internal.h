@@ -92,6 +92,40 @@
 /* Number of GPIO pins on ESP32-C3 */
 #define NUM_GPIO 22
 
+/* APB_SARADC - digital ADC controller */
+#define APB_SARADC_BASE             0x60040000U
+#define APB_SARADC_CTRL_REG         MMIO32(APB_SARADC_BASE + 0x000)
+#define APB_SARADC_CTRL2_REG        MMIO32(APB_SARADC_BASE + 0x004)
+#define APB_SARADC_SAR_PATT_TAB1_REG MMIO32(APB_SARADC_BASE + 0x01C)
+#define APB_SARADC_SAR1_DATA_REG    MMIO32(APB_SARADC_BASE + 0x02C)
+#define APB_SARADC_INT_RAW_REG      MMIO32(APB_SARADC_BASE + 0x040)
+#define APB_SARADC_INT_CLR_REG      MMIO32(APB_SARADC_BASE + 0x048)
+#define APB_SARADC_CLKM_CONF_REG    MMIO32(APB_SARADC_BASE + 0x054)
+
+/* APB_SARADC_CTRL bits */
+#define SARADC_START_FORCE          (1u << 0)
+#define SARADC_START                (1u << 1)
+#define SARADC_SAR_CLK_DIV(x)       ((x) << 7)
+#define SARADC_SAR_PATT_LEN(x)      ((x) << 15) /* 0 = 1 entry */
+#define SARADC_SAR_PATT_RESET       (1u << 23)
+#define SARADC_XPD_SAR_FORCE_ON     (2u << 29)
+
+/* APB_SARADC_CLKM_CONF bits */
+#define SARADC_CLKM_DIV_NUM(x)      ((x) << 0)
+#define SARADC_CLKM_CLK_EN          (1u << 20)
+#define SARADC_CLKM_SEL_XTAL        (0u << 21)
+
+/* APB_SARADC_INT bit */
+#define SARADC_ADC1_DONE            (1u << 17)
+
+/* SYSTEM - peripheral clock gating */
+#define SYSTEM_BASE                 0x600C0000U
+#define SYSTEM_PERIP_CLK_EN0_REG    MMIO32(SYSTEM_BASE + 0x018)
+#define SYSTEM_PERIP_RST_EN0_REG    MMIO32(SYSTEM_BASE + 0x01C)
+#define SYSTEM_APB_SARADC_CLK_EN    (1u << 28)
+#define SYSTEM_I2C0_CLK_EN          (1u << 7)
+#define SYSTEM_I2C1_CLK_EN          (1u << 16)
+
 /* eFuse - unique chip ID (MAC address in block 1) */
 #define EFUSE_BASE                  0x60008800U
 #define EFUSE_RD_MAC_SPI_SYS_0_REG  MMIO32(EFUSE_BASE + 0x044)
