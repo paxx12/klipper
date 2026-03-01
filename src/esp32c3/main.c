@@ -5,13 +5,15 @@
 // This file may be distributed under the terms of the GNU GPLv3 license.
 
 #include <stdint.h> // uint32_t
-#include <string.h> // memmove
 #include "board/misc.h" // bootloader_request
-#include "command.h" // command_find_and_dispatch
+#include "command.h" // DECL_CONSTANT_STR, DECL_COMMAND_FLAGS
 #include "compiler.h" // __visible
 #include "generic/irq.h" // irqstatus_t, irq_poll
 #include "internal.h" // UART0_*, SYSTIMER_*, RTC_CNTL_*
 #include "sched.h" // sched_main
+#if CONFIG_ESP32C3_SERIAL_UART0
+#include <string.h> // memmove
+#endif
 
 DECL_CONSTANT_STR("MCU", "esp32c3");
 
@@ -78,8 +80,10 @@ irq_poll(void)
 
 
 /****************************************************************
- * Console I/O (polling UART)
+ * Console I/O (polling UART — only when UART0 polling is selected)
  ****************************************************************/
+
+#if CONFIG_ESP32C3_SERIAL_UART0
 
 #define RX_BUFFER_SIZE 192
 
@@ -146,11 +150,14 @@ console_sendf(const struct command_encoder *ce, va_list args)
         uart_tx_byte(buf[i]);
 }
 
+#endif /* CONFIG_ESP32C3_SERIAL_UART0 */
+
 
 /****************************************************************
  * Hardware init
  ****************************************************************/
 
+#if CONFIG_ESP32C3_SERIAL_UART0 || CONFIG_ESP32C3_SERIAL_UART0_IRQ
 static void
 uart_init(void)
 {
@@ -160,6 +167,7 @@ uart_init(void)
     UART0_CLKDIV_REG = div & 0xFFFFF;
     UART0_CONF0_REG = UART_CONF0_8N1;
 }
+#endif
 
 static void
 disable_flash_boot_wdt(void)
@@ -215,7 +223,9 @@ esp32c3_main(void)
         *p++ = 0;
 
     disable_flash_boot_wdt();
+#if CONFIG_ESP32C3_SERIAL_UART0 || CONFIG_ESP32C3_SERIAL_UART0_IRQ
     uart_init();
+#endif
 
     sched_main();
     for (;;)

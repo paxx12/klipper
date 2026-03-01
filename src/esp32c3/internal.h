@@ -205,6 +205,16 @@
     ((op) | ((byte_num) << 8) | ((ack_en) << 16) \
      | ((ack_exp) << 17) | ((ack_val) << 18))
 
+/* USB Serial/JTAG controller */
+#define USB_DEVICE_BASE             0x60043000U
+#define USB_DEVICE_EP1_REG          MMIO32(USB_DEVICE_BASE + 0x000)
+#define USB_DEVICE_EP1_CONF_REG     MMIO32(USB_DEVICE_BASE + 0x004)
+#define USB_DEVICE_MISC_CONF_REG    MMIO32(USB_DEVICE_BASE + 0x044)
+#define USB_DEVICE_WR_DONE          (1u << 0)
+#define USB_DEVICE_SERIAL_IN_FREE   (1u << 1)
+#define USB_DEVICE_SERIAL_OUT_AVAIL (1u << 2)
+#define USB_DEVICE_CLK_EN           (1u << 1)
+
 /* eFuse - unique chip ID (MAC address in block 1) */
 #define EFUSE_BASE                  0x60008800U
 #define EFUSE_RD_MAC_SPI_SYS_0_REG  MMIO32(EFUSE_BASE + 0x044)
