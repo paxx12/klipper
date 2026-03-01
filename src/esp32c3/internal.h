@@ -92,4 +92,9 @@
 /* Number of GPIO pins on ESP32-C3 */
 #define NUM_GPIO 22
 
+/* eFuse - unique chip ID (MAC address in block 1) */
+#define EFUSE_BASE                  0x60008800U
+#define EFUSE_RD_MAC_SPI_SYS_0_REG  MMIO32(EFUSE_BASE + 0x044)
+#define EFUSE_RD_MAC_SPI_SYS_1_REG  MMIO32(EFUSE_BASE + 0x048)
+
 #endif // internal.h

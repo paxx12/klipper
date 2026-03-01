@@ -12,6 +12,7 @@ CFLAGS += -ffreestanding -fno-builtin
 src-y += esp32c3/main.c esp32c3/gpio.c
 src-y += esp32c3/timer.c esp32c3/watchdog.c
 src-y += generic/crc16_ccitt.c generic/timer_irq.c
+src-$(CONFIG_USB) += esp32c3/chipid.c
 
 # Build output binary using esptool
 $(OUT)klipper.bin: $(OUT)klipper.elf
