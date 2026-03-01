@@ -1,0 +1,43 @@
+# Kconfig settings for ESP32-C3
+
+if MACH_ESP32C3
+
+config ESP32C3_SELECT
+    bool
+    default y
+    select HAVE_GPIO
+    select HAVE_STRICT_TIMING
+
+config BOARD_DIRECTORY
+    string
+    default "esp32c3"
+
+config MCU
+    string
+    default "esp32c3"
+
+config CLOCK_FREQ
+    int
+    default 16000000
+
+config FLASH_SIZE
+    hex
+    default 0x400000
+
+config STACK_SIZE
+    int
+    default 8192
+
+
+######################################################################
+# Communication interface
+######################################################################
+
+choice
+    prompt "Communication Interface"
+    config ESP32C3_SERIAL_UART0
+        bool "UART0 on GPIO20/GPIO21"
+        select SERIAL
+endchoice
+
+endif
